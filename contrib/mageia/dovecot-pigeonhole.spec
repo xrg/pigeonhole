@@ -7,6 +7,7 @@
 Name:           dovecot-pigeonhole
 Summary:        Pigeonhole Sieve/ManageSieve plugin for dovecot LDA
 Group:          System/Servers
+Epoch:          1
 Version:        %git_get_ver
 Release:        %mkrel %git_get_rel2
 License:        MIT and LGPLv2 and BSD-like and Public Domain
@@ -14,7 +15,7 @@ URL:            http://dovecot.org
 Source:         %git_bs_source %{name}-%{version}.tar.gz
 Source1:        %{name}-gitrpm.version
 Source2:        %{name}-changelog.gitrpm.txt
-Requires:       dovecot = %{dovecot_version}
+Requires:       dovecot >= %{dovecot_version}
 Obsoletes:      %{name}-plugins-sieve < 2.0, %{name}-plugins-managesieve < 2.0
 BuildRequires:  dovecot-devel
 BuildRequires:  gettext-devel
@@ -40,7 +41,6 @@ This package contains development files for Pigeonhole Sieve/ManageSieve %{pigeo
 %serverbuild
 ./autogen.sh
 
-autoreconf -fi
 %configure2_5x \
     --disable-static \
     --with-dovecot=%{_libdir}/dovecot/ \
