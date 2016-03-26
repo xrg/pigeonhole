@@ -45,15 +45,15 @@ This package contains development files for Pigeonhole Sieve/ManageSieve %{pigeo
 autoreconf -fi
 %configure2_5x \
     --disable-static \
-    --with-dovecot=../ \
+    --with-dovecot=%{_libdir}/dovecot/ \
     --with-unfinished-features 
 %make
 
 %install
 %makeinstall_std
-mv %{buildroot}%{_libdir}/dovecot/sieve %{buildroot}%{_libdir}/dovecot/modules
+# mv %{buildroot}%{_libdir}/dovecot/sieve %{buildroot}%{_libdir}/dovecot/modules
+install -d %{buildroot}%{_sysconfdir}/dovecot/conf.d
 install -m 644 doc/example-config/conf.d/*.conf* %{buildroot}%{_sysconfdir}/dovecot/conf.d
-popd
 
 install -d -m 755 %{buildroot}%{_docdir}/dovecot-pigeonhole
 
