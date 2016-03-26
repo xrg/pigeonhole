@@ -2,6 +2,7 @@
 %define git_head HEAD
 
 %define dovecot_version 2.2
+%define dovecot_moduledir %{_libdir}/dovecot/modules
 
 Name:           dovecot-pigeonhole
 Summary:        Pigeonhole Sieve/ManageSieve plugin for dovecot LDA
@@ -13,11 +14,8 @@ URL:            http://dovecot.org
 Source:         %git_bs_source %{name}-%{version}.tar.gz
 Source1:        %{name}-gitrpm.version
 Source2:        %{name}-changelog.gitrpm.txt
-Provides:       imap-server pop3-server
-Provides:       imaps-server pop3s-server
 Requires:       dovecot = %{dovecot_version}
 Obsoletes:      %{name}-plugins-sieve < 2.0, %{name}-plugins-managesieve < 2.0
-Requires(post): systemd >= %{systemd_required_version}
 BuildRequires:  dovecot-devel
 BuildRequires:  gettext-devel
 
@@ -63,10 +61,13 @@ install contrib/mageia/procmail2sieve.pl -m 755 %{buildroot}%{_bindir}
 perl -pi -e 's|#!/usr/local/bin/perl|#!%{_bindir}/perl|' \
     %{buildroot}%{_bindir}/procmail2sieve.pl
 
+# remove the libtool archives
+find %{buildroot} -name '*.la' -delete
 
 %files
-%doc %{pigeonhole_dir}/{AUTHORS,ChangeLog,COPYING*,INSTALL,NEWS,README}
-%doc %{pigeonhole_dir}/doc/*
+%doc AUTHORS COPYING* INSTALL NEWS README
+%doc doc/*
+%{_docdir}/dovecot/sieve/extensions/*
 %{_sysconfdir}/dovecot/conf.d/20-managesieve.conf
 %{_sysconfdir}/dovecot/conf.d/90-sieve.conf
 %{_sysconfdir}/dovecot/conf.d/90-sieve-extprograms.conf
@@ -78,20 +79,31 @@ perl -pi -e 's|#!/usr/local/bin/perl|#!%{_bindir}/perl|' \
 %{_libdir}/dovecot/libdovecot-sieve.so*
 %{_libexecdir}/dovecot/managesieve
 %{_libexecdir}/dovecot/managesieve-login
-%{_libdir}/dovecot/modules/lib90_sieve_plugin.so
-%dir %{_libdir}/dovecot/modules/sieve
-%{_libdir}/dovecot/modules/sieve/lib90_sieve_extprograms_plugin.so
-%{_libdir}/dovecot/modules/doveadm/lib10_doveadm_sieve_plugin.so
-%{_libdir}/dovecot/modules/settings/libmanagesieve_settings.so
-%{_libdir}/dovecot/modules/settings/libmanagesieve_login_settings.so
+%{dovecot_moduledir}/lib90_sieve_plugin.so
+%dir %{dovecot_moduledir}/sieve
+%{dovecot_moduledir}/sieve/lib90_sieve_extprograms_plugin.so
+%{dovecot_moduledir}/doveadm/lib10_doveadm_sieve_plugin.so
+%{dovecot_moduledir}/settings/libmanagesieve_settings.so
+%{dovecot_moduledir}/settings/libmanagesieve_login_settings.so
+%{dovecot_moduledir}/settings/libpigeonhole_settings.so
 %{_mandir}/man1/sievec.1*
+%{_mandir}/man1/doveadm-sieve.1*
 %{_mandir}/man1/sieved.1*
 %{_mandir}/man1/sieve-dump.1*
 %{_mandir}/man1/sieve-filter.1*
 %{_mandir}/man1/sieve-test.1*
 %{_mandir}/man7/pigeonhole.7*
+%{_docdir}/dovecot/example-config/conf.d/20-managesieve.conf
+%{_docdir}/dovecot/example-config/conf.d/90-sieve-extprograms.conf
+%{_docdir}/dovecot/example-config/conf.d/90-sieve.conf
+%{_docdir}/dovecot/sieve/locations/*
+%{_docdir}/dovecot/sieve/plugins/*
 
 %files devel
 %{_includedir}/dovecot/sieve
+%{_datadir}/aclocal/%{name}.m4
+
 
 %changelog -f %{_sourcedir}/%{name}-changelog.gitrpm.txt
+
+
