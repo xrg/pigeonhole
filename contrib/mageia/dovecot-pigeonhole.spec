@@ -43,7 +43,7 @@ This package contains development files for Pigeonhole Sieve/ManageSieve %{pigeo
 
 %configure2_5x \
     --disable-static \
-    --with-dovecot=%{_libdir}/dovecot/ \
+    --with-dovecot=%{_libdir}/dovecot \
     --with-unfinished-features 
 %make
 
